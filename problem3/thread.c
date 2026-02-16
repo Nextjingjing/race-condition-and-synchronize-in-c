@@ -21,8 +21,6 @@ struct shared_data shared;
 
 void* producer(void* arg) {
 
-    sleep(1); // Sleep for a while to let the consumer start first
-
     int i = 0;
     while (1) {
 
@@ -50,21 +48,8 @@ void* consumer(void* arg) {
     int consumed_count = 0;
 
     while (1) {
-
+        sleep(1);
         sem_wait(&shared.mutex);
-
-        // Deadlock occurs
-        while (shared.buffer[shared.out] == 0) {
-
-            consumed_count++;
-
-            if (consumed_count > 10000000) {
-                printf("Deadlock detected. Exiting.\n");
-                exit(0);
-            }
-        }
-
-        consumed_count = 0;
 
         int next_consumed = shared.buffer[shared.out];
         shared.out = (shared.out + 1) % BUFFER_SIZE;

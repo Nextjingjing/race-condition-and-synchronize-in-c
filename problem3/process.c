@@ -51,7 +51,6 @@ int main() {
     }
     else if (pid == 0) {
         // Child - Producer
-        sleep(1); // Sleep for a while to let the consumer start first
         int i = 0;
         while (true) {
             // produce an item in next_produced
@@ -75,23 +74,11 @@ int main() {
     }
     else {
         // Parent - Consumer
-        int consumed_count = 0;
+        sleep(1);
         while (true) {
             // entry section for consumer
             // sem_wait(&shared->full);
             sem_wait(&shared->mutex);
-
-            // Deadlock occurs
-            while (shared->buffer[shared->out] == 0) {
-                // wait until the producer produces an item
-                consumed_count++;
-                // Prevent Deadlock by breaking the loop if it has been waiting for too long
-                if (consumed_count > 10000000) {
-                    printf("Deadlock detected. Exiting.\n");
-                    return 0;
-                }
-            }
-            consumed_count = 0; // reset the count after successfully consuming an item
 
             // remove an item from the buffer to next_consumed
             int next_consumed = shared->buffer[shared->out];
