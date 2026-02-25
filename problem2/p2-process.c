@@ -8,7 +8,7 @@
 #include <fcntl.h>
 
 #define BUFFER_SIZE 5
-#define ITERATIONS 50
+#define ITERATIONS 10
 
 // Parent process is Consumer
 // Child process is Producer
